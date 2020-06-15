@@ -9,10 +9,11 @@ env:
 jobs:
   include:
   - if: tag IS present
-    env:
-      - IMAGE_NAME="${TRAVIS_TAG#*:}"
-      - IMAGE_TAG="${TRAVIS_TAG#*@}"
-      - TAG="${TRAVIS_TAG%%@*}"
+    env: # v0.1-name-of-image_tag
+      - TAG="${TRAVIS_TAG#*-}"
+      - IMAGE="${TRAVIS_TAG%%-*}"
+      - IMAGE_NAME="${IMAGE#*_}"
+      - IMAGE_TAG="${IMAGE%%_*}"
   - stage: build_docker_image
     script:
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
