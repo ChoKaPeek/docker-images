@@ -11,16 +11,17 @@ jobs:
   - if: tag IS present
     env:
       - IMAGE_NAME="${TRAVIS_TAG#*:}"
-      - IMAGE_TAG="${TRAVIS_TAG%%:*}"
+      - IMAGE_TAG="${TRAVIS_TAG#*@}"
+      - TAG="${TRAVIS_TAG%%@*}"
   - stage: build_docker_image
     script:
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker build -t $TRAVIS_TAG $IMAGE_NAME
+      - docker build -t $IMAGE_TAG $IMAGE_NAME
       - docker images
   - stage: deploy
     script:
-      - docker tag $TRAVIS_TAG $DOCKER_USERNAME/$TRAVIS_TAG
-      - docker push $DOCKER_USERNAME/$TRAVIS_TAG
+      - docker tag $IMAGE_TAG $DOCKER_USERNAME/$IMAGE_TAG
+      - docker push $DOCKER_USERNAME/$IMAGE_TAG
 
 stages:
   - build_docker_image
