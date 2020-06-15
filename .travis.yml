@@ -1,0 +1,27 @@
+services:
+- docker
+
+env:
+  global:
+  - secure: GhTWDxGu3Him4R98FDSw7lFsQgGIk/NSSZMSY8gH5A9mGx5uRpx0Z/FUxIbD9NOU4EaXd4p2fm1OkaL8pgWHyjH6rLXB6HtsYP2h3/qSWsnlecrt8V2J/e7egqlggJScxUybpgXIhWNPRNrcyt4Y7DeAG8rH5Ia48Vw8UBTwiF2+I3ttMlLxIcNmx6paERiIMtDEzSAgjJF574WrlSDUBrHIQmgOVH1CPeq53iStQ2vnlFgw+Ir0TpghR3RkMRAUx7NvyUUmECYek8LT38aeq2ekGO0mS1F4BGfD5DjG7kxuljRXOytPiUc3G2yIoH0ksLb2lYywx2Ci5oYqG3tKo6baRWhGVVUnm8JHaAaHbcuoFFRN2V/kogu14kEg6lcKCTXME3DahyyHVnm7uTAuB52Hejx3lFZiDsmqyGI3e6DUBzc+6l9WM0khX4z/Jn0dSl3nHw0RJ1Z8otBSvVYO2ojqDRC+qEGjxmW0zaCPu3ci4jrFa+DdS1SbBCIc1LeFuYP2QABwigPhxKMg9Mvk0xc18EfXOc7llYNFWpbJosq1PVDZXhBMmLtdxmpNhjYmoP2/O6QiW5vP9BjEuDo8Lx9pDpQCzmyT6Cep/Szr0eWTz/sSw2eE4pdN/esUdK4q3pVFSz4k26Lc6dIB28MqpEB3beIuQv806heqJxGj5eM=
+  - secure: M71yotrxl2Rq3GxmY9SmAb47f5IaFI1DolB8rs5/IKtwYfjkLlI8hCz0q+0oTgGhjevLe5yz7aw62DM6JqBkZ7oKAf+mA4fdNyobDmyQOctBmznAdu4pfVtiY7RSoh29GC6Awa1SBoC5QX4bjyGxAmwKttEL/sEp3LdQ10RpdKbs/cjq8DSRqbTx5AGNomUzwX133k2x820tarSUlTt1cbzQMDkBotODAokgKlh1cj1sdzWNUje7B9bTt5vynOmJOiOMmo3PnvDyNC/qJ+r1iVP5I175A2h2cPD3mUJUSvXgMtAj7/SDT5tElekEe3zQitj4YRNLbz9TaIKpH51xxWVB80m2vSq8wd4b0+J8gKYsqmBRiddAzHpEtAyz5aelgr6VRY9XJIqpG1dPwVggVX45u50QmbP6G3eJzAyZy1P6oxECMmOuZjCNJAcNCiMolpmsY2YPvthbaBH68a12yLayH0C+TZzeA8I/35RRcRvM3XLllnXmxBvGUTOSUsnpNgdXqBALyXDlVKqpBIAPim4yC4wReA18+oWa7Sdv3+MPHgUCmpT8ssqYJHCayE81zf5rw3ptK2a68hMT/zxW+kQbV1ahZ4n85KT+U81E4oyXZSknhblHE1Q9sR/aqBSMtLnJTxKCYZw7I8Oxx4VCrkV5XDcErSA8q0ipPo5wLWU=
+
+jobs:
+  include:
+  - if: tag IS present
+    env:
+      - IMAGE_NAME="${TRAVIS_TAG#*:}"
+      - IMAGE_TAG="${TRAVIS_TAG%%:*}"
+  - stage: build_docker_image
+    script:
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - docker build -t $TRAVIS_TAG $IMAGE_NAME
+      - docker images
+  - stage: deploy
+    script:
+      - docker tag $TRAVIS_TAG $DOCKER_USERNAME/$TRAVIS_TAG
+      - docker push $DOCKER_USERNAME/$TRAVIS_TAG
+
+stages:
+  - build_docker_image
+  - deploy
