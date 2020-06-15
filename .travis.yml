@@ -9,7 +9,6 @@ env:
 jobs:
   include:
     - stage: before_build
-      if: tag IS present
       env: # v0.1-name-of-image_tag
         - TAG="${TRAVIS_TAG#*-}"
         - IMAGE="${TRAVIS_TAG%%-*}"
@@ -26,6 +25,9 @@ jobs:
       - docker push $DOCKER_USERNAME/$IMAGE_TAG
 
 stages:
-  - before_build
-  - build_docker_image
-  - deploy
+  - name: before_build
+    if: tag IS present
+  - name: build_docker_image
+    if: tag IS present
+  - name: deploy
+    if: tag IS present
