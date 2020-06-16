@@ -1,8 +1,21 @@
 #!/bin/sh
 
+# installs the docker-credential-pass credentials helper
 curl -fsSL https://github.com/docker/docker-credential-helpers/releases/download/v0.6.3/docker-credential-pass-v0.6.3-amd64.tar.gz | tar xz
 chmod +x docker-credential-pass
 sudo mv docker-credential-pass /usr/local/bin/
+
+# fixes Inappropriate ioctl issues with gpg2
+echo -n 'use-agent\npinentry-mode loopback\n' >> ~/.gnupg/gpg.conf
+echo 'allow-loopback-pinentry' >> ~/.gnupg/gpg-agent.conf
+
+# runs gpg agent
+echo RELOADAGENT | gpg-connect-agent
+
+# fixes gpg2 generation hanging infinitely
+sudo rngd -r /dev/urandom
+
+# key generation
 gpg --batch --gen-key <<-EOF
 %echo Generating a standard key
 Key-Type: DSA
@@ -16,7 +29,9 @@ Expire-Date: 0
 %commit
 %echo done
 EOF
-key=$(gpg --no-auto-check-trustdb --list-secret-keys | grep ^sec | cut -d/ -f2 | cut -d" " -f1)
-pass init $key
+
+pass init "Amael Tardif"
+
+# config docker
 mkdir -p ~/.docker
 echo -n '{\n\t"credsStore": "pass"\n}' > ~/.docker/config.json
