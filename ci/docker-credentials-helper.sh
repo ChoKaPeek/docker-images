@@ -24,6 +24,13 @@ sudo pkill rngd
 pass init "Amael Tardif"
 echo pass is initialized | pass insert docker-credential-helpers/docker-pass-initialized-check
 
+# check if correctly initialized
+gpg2 --list-secret-keys
+# output : pass is initialized
+pass show docker-credential-helpers/docker-pass-initialized-check
+# output : {}
+docker-credential-pass list
+
 # config docker
 mkdir -p ~/.docker
 echo -n '{\n\t"credsStore": "pass"\n}' > ~/.docker/config.json
