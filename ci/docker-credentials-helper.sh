@@ -21,8 +21,9 @@ gpg2 --pinentry-mode=loopback --gen-key --batch --status-fd=0 --with-colons ci/g
 sudo pkill rngd
 
 # pass initialization, key usage
+# `pass insert` disables by default the keyword echo without the option -e
 pass init "Amael Tardif"
-echo pass is initialized | pass insert docker-credential-helpers/docker-pass-initialized-check
+echo "pass is initialized" | pass insert -e docker-credential-helpers/docker-pass-initialized-check
 
 # check if correctly initialized
 gpg2 --list-secret-keys
