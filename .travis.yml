@@ -22,12 +22,13 @@ jobs:
   - stage: build
     script:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - docker build -t "$IMAGE_TAG" "$IMAGE_NAME"
+    - echo "Image: $IMAGE_NAME - Tag: $IMAGE_TAG"
+    - docker build -t "$IMAGE" "$IMAGE_NAME"
     - docker images
   - stage: deploy
     script:
-    - docker tag "$IMAGE_TAG" "$DOCKER_USERNAME/$IMAGE_TAG"
-    - docker push "$DOCKER_USERNAME/$IMAGE_TAG"
+    - docker tag "$IMAGE" "$DOCKER_USERNAME/$IMAGE"
+    - docker push "$DOCKER_USERNAME/$IMAGE"
 
 stages:
 - name: build
