@@ -6,7 +6,6 @@ chmod +x docker-credential-pass
 sudo mv docker-credential-pass /usr/local/bin/
 
 # fixes Inappropriate ioctl issues with gpg2
-echo -n 'use-agent\npinentry-mode loopback\n' >> ~/.gnupg/gpg.conf
 echo 'allow-loopback-pinentry' >> ~/.gnupg/gpg-agent.conf
 
 # runs gpg agent
@@ -15,22 +14,12 @@ echo RELOADAGENT | gpg-connect-agent
 # fixes gpg2 generation hanging infinitely
 sudo rngd -r /dev/urandom
 
-# key generation
-gpg --batch --gen-key <<-EOF
-%echo Generating a standard key
-Key-Type: DSA
-Key-Length: 1024
-Subkey-Type: ELG-E
-Subkey-Length: 1024
-Name-Real: Amael Tardif
-Name-Email: amael.tardif@epita.fr
-Expire-Date: 0
-# Do a commit here, so that we can later print "done" :-)
-%commit
-%echo done
-EOF
+# key generation, use batch mode (no input required)
+gpg --pinentry-mode=loopback --gen-key --batch --status-fd=0 --with-colons ci/gpg_batch_file
 
+# pass initialization, key usage
 pass init "Amael Tardif"
+echo pass is initialized | pass insert docker-credential-helpers/docker-pass-initialized-check
 
 # config docker
 mkdir -p ~/.docker
