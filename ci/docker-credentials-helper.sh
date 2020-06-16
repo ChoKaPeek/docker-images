@@ -15,7 +15,7 @@ echo RELOADAGENT | gpg-connect-agent
 sudo rngd -r /dev/urandom
 
 # key generation, use batch mode (no input required)
-gpg --pinentry-mode=loopback --gen-key --batch --status-fd=0 --with-colons ci/gpg_batch_file
+gpg2 --pinentry-mode=loopback --gen-key --batch --status-fd=0 --with-colons ci/gpg_batch_file
 
 # terminate rngd
 sudo pkill rngd
