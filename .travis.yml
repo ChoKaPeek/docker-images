@@ -26,10 +26,19 @@ jobs:
     - echo "Image $IMAGE_NAME - Tag $IMAGE_TAG"
     - docker build -t "$IMAGE" "$IMAGE_NAME"
     - docker images
+    - docker save -o built_image.tar "$IMAGE"
+    workspaces:
+      create:
+        name: ws1
+        paths:
+        - built_image.tar
   - stage: deploy
     script:
+    - docker load -i built_image.tar
     - docker tag "$IMAGE" "$DOCKER_USERNAME/$IMAGE"
     - docker push "$DOCKER_USERNAME/$IMAGE"
+    workspaces:
+      use: ws1
 
 stages:
 - name: build
