@@ -17,6 +17,9 @@ sudo rngd -r /dev/urandom
 # key generation, use batch mode (no input required)
 gpg --pinentry-mode=loopback --gen-key --batch --status-fd=0 --with-colons ci/gpg_batch_file
 
+# terminate rngd
+sudo pkill rngd
+
 # pass initialization, key usage
 pass init "Amael Tardif"
 echo pass is initialized | pass insert docker-credential-helpers/docker-pass-initialized-check
