@@ -1,4 +1,5 @@
-# defaults language: ruby
+# defaults
+language: ruby
 os:
 - linux
 dist: xenial

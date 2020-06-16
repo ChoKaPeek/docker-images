@@ -19,5 +19,4 @@ EOF
 key=$(gpg --no-auto-check-trustdb --list-secret-keys | grep ^sec | cut -d/ -f2 | cut -d" " -f1)
 pass init $key
 mkdir -p ~/.docker
-touch ~/.docker/config.json
-sed -i '0,/{/s/{/{\n\t"credsStore": "pass",/' ~/.docker/config.json
+echo -n '{\n\t"credsStore": "pass"\n}' > ~/.docker/config.json
