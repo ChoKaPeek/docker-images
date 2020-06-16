@@ -1,10 +1,15 @@
-# defaults
-language: ruby
+# defaults language: ruby
 os:
 - linux
 dist: xenial
+
 services:
 - docker
+
+addons:
+  apt:
+    packages:
+    - pass # for docker credentials storage
 
 # travis encrypt --com PRIVATE_ENV="value" --add env.global
 # Expected tag is v?.?-<name-of-image>_<image.tag>
@@ -33,6 +38,7 @@ jobs:
         - built_image.tar
   - stage: deploy
     script:
+    - sh ci/docker-credentials-helper.sh
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - docker load -i built_image.tar
     - docker tag "$IMAGE" "$DOCKER_USERNAME/$IMAGE"
