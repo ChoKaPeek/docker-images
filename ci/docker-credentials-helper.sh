@@ -15,21 +15,23 @@ echo RELOADAGENT | gpg-connect-agent
 sudo rngd -r /dev/urandom
 
 # key generation, use batch mode (no input required)
-gpg2 --pinentry-mode=loopback --gen-key --batch --status-fd=0 --with-colons ci/gpg_batch_file
+# pinentry-mode=loopback prevents gpg to gui prompt for a passphrase
+# passphrase can't be null in the batch file, but can as an option in the cli
+gpg2 --pinentry-mode=loopback --passphrase "" --gen-key --batch --status-fd=0 --with-colons ci/gpg_batch_file
 
 # terminate rngd
 sudo pkill rngd
 
 # pass initialization, key usage
+pass init "Amael Tardif" # any key part, can link to multiple keys
 # `pass insert` disables by default the keyword echo without the option -e
-pass init "Amael Tardif"
 echo "pass is initialized" | pass insert -e docker-credential-helpers/docker-pass-initialized-check
 
 # check if correctly initialized
-gpg2 --list-secret-keys
-# output : pass is initialized
+# warning: gpg prompts for passphrase, give gpg an empty one to avoid it
+# output: pass is initialized
 pass show docker-credential-helpers/docker-pass-initialized-check
-# output : {}
+# output: {}
 docker-credential-pass list
 
 # config docker

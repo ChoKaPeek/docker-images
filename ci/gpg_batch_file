@@ -3,7 +3,6 @@ Key-Type: default
 Subkey-Type: default
 Name-Real: Amael Tardif
 Name-Email: amael.tardif@epita.fr
-Passphrase: ''
 Expire-Date: 0
 # We do a commit here, so that we can later print "done"
 %commit
