@@ -20,9 +20,10 @@ RUN set -x \
     ca-certificates \
     curl \
     git \
-    nodemon \
     python \
     xz-utils
+
+RUN npm install --global nodemon
 
 # Get kuzzle and submodules
 RUN git clone -b ${current_tag} --recursive \
@@ -41,7 +42,7 @@ RUN npm ci --unsafe-perm \
 
 # Cleanup
 RUN apt-get remove \
-    build-essentials \
+    build-essential \
     git \
     python \
     xz-utils \
