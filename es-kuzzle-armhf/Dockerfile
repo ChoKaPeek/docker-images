@@ -1,4 +1,4 @@
-FROM elasticsearch-armhf:7.4.2
+FROM chokapeek/elasticsearch-armhf:7.4.2
 
 WORKDIR /opt/elasticsearch
 
