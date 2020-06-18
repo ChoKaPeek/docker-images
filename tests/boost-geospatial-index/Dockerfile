@@ -9,10 +9,6 @@ RUN install_packages python build-essential
 
 RUN set -x
 
-RUN npm install bindings
-
-RUN npm install nan
-
 RUN npm install boost-geospatial-index
 
 RUN [ "cross-build-end" ]
