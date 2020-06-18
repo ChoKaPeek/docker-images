@@ -1,8 +1,7 @@
+ARG TAG=2.2.2
 FROM balenalib/armv7hf-debian-node:latest-jessie
 # balenalib is formerly resin
 # stretch and buster provide a compile error on boost-geospatial-index
-
-ARG current_tag=2.2.2
 
 LABEL io.kuzzle.vendor="Kuzzle <support@kuzzle.io>"
 LABEL description="Run your Kuzzle backend in production mode"
@@ -26,7 +25,7 @@ RUN set -x \
 RUN npm install --global nodemon
 
 # Get kuzzle and submodules
-RUN git clone -b ${current_tag} --recursive \
+RUN git clone -b ${TAG} --recursive \
     https://github.com/kuzzleio/kuzzle.git .
 
 # Debug line
