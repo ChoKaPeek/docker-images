@@ -21,7 +21,8 @@ env:
   - TAG="${TRAVIS_TAG%%-*}"
   - TMP="${TRAVIS_TAG#*-}"
   - IMAGE_TAG="${TMP#*_}"
-  - IMAGE_NAME="${TMP%%_*}"
+  - IMAGE_PATH="${TMP%%_*}"
+  - IMAGE_NAME=$(basename "$IMAGE_PATH")
   - IMAGE="$IMAGE_NAME:$IMAGE_TAG"
   - secure: cGlKmcOysdRdA6gB9YVQRQRxLqx17mEEEQkslujHin4RFUhEja7vXRRt7qPtB3RLKi0CJR3bbrKoiv7kWbpgRn/nE4as1DmsNXEJU9gnEVHd46uFTkgxqMcuezpjkDMO+9rSMeX4B70sxlHg6doOIAE/ABa4Yw/AX8MBmVrpr+eR3wliugxd7BlxutnwqmkSLkn6DlyxsUObmslvd+EUctBfHXY4blZotyhWEPHp9JNczxESEMmkLV3tc0MdAFHnKOEZ2/2+h8nI7YG5whtwf3aIflpjLrGFukoifFz5I7GrMzHI6exi9UjO3Bia4XGJp2m/VrOYCnIxOtZdM6Fg40Y/Re+n9eaN8SOdywbaQpq/GLoZxMTPt7cSxFDQMvTKjFsyR+11Q+7ZYwDd591wKKQFFw1Pn9LHl32tQ6eeYyyVJrIspjEO0qu58ML104M2Sh1HdIBnWiVjU+qV2BzcEol7Na8UHhzhrYepMr413XdtuKDmHvtYBPmyYzSJulOhHpake9bZ6ODamw7gVpGzgnqVSwuSWH5BHXhBCNg+WnQsbnbOf9gCwUQPckHokHajdB91N1WLymN0LJcQHHbXteqImO9aVbZpNMHTHNRMIyBwdkuBeiiy7Pq0mviaYxW8Ym5t6KxFdjcPR57YXg931RxTNpl5dgRKDIZChAYRPG8=
   - secure: cdvmB0T0VsiCYA3VF6E887XR0k5N2BKNkMPTbYCqd3DlnOkqKYqCTNe19eWe8GztSw1JaN8edt2jbIgJsQqnYBiuXX0srFyC5UjbR/TrIpKczh7UnwL6+T/Q5KR6PQ1V/WZ7kIZaCE/AW/5jDylihTzRqHyJhg1JVFRrMBdhKuLpItdsR0yyKhHOPzaWeVbNDqGfiNOcn+5EtYTZUeLxu/YolVooYIw66kWifjvS3Bo4DdLoltWjYyqHdorXCaUMNOMSCfj7Jhwid3qVIA+ugdVkR6Selt4CREola9JYTtB3ufM2y3T0NTROgbKzeTKqwTRuosGx5pCjzmFeRWrHU5Pn0Jv5ssYsq/k06DoWtbteS4De34VHz4Tjbk3jv3/Db50qqjBzkjvjT189xZvzRoNyhEP0Goo4jf8sLgu90kD6A+c1pRjweRpc+d5vTl/39H6xd8Ie+OTk5bASJhMNk562yPTRm8+m35wVsCAH2dxOx98UE5sUCfXBrs7DPKB9oWgbZLCkZ9qvrwTDQ0CRWdTrt0aVuTm+1QzGctHGJ9iaQxLekdiXj3mZJb80tDMhb0knfrInw5ONOJ66rU9yhI1rGnVhOqKFFJyFkKWkC0PqnCntLAAq5ddJIDg1GxNkYj2pGr7RZHta+YlmDuz4mpr7tpEtONn6ScnCppBPDos=
@@ -30,8 +31,8 @@ jobs:
   include:
   - stage: build
     script:
-    - echo "Image $IMAGE_NAME - Tag $IMAGE_TAG"
-    - docker build -t "$IMAGE" "$IMAGE_NAME"
+    - echo "Image $IMAGE_NAME - Tag $IMAGE_TAG - Path $IMAGE_PATH"
+    - docker build -t "$IMAGE" "$IMAGE_PATH"
     - docker images
     - docker save -o built_image.tar "$IMAGE"
     workspaces:
