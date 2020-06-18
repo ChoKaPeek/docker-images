@@ -1,6 +1,7 @@
 ARG TAG=7.4.2
 FROM adoptopenjdk/openjdk11:slim
 
+ARG TAG
 ARG ES_VERSION=${TAG}
 ARG ELASTIC="https://artifacts.elastic.co/downloads/elasticsearch"
 

@@ -1,7 +1,9 @@
-ARG TAG=2.2.2
+ARG TAG="2.2.2"
 FROM balenalib/armv7hf-debian-node:latest-jessie
 # balenalib is formerly resin
 # stretch and buster provide a compile error on boost-geospatial-index
+
+ARG TAG
 
 LABEL io.kuzzle.vendor="Kuzzle <support@kuzzle.io>"
 LABEL description="Run your Kuzzle backend in production mode"
