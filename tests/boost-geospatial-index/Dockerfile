@@ -1,5 +1,5 @@
-ARG DEBIAN_VERSION=buster
-FROM balenalib/armv7hf-debian-node:latest-${DEBIAN_VERSION}
+ARG TAG=buster
+FROM balenalib/armv7hf-debian-node:latest-${TAG}
 
 WORKDIR /var/app
 

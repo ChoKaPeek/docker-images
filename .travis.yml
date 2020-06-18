@@ -32,7 +32,7 @@ jobs:
   - stage: build
     script:
     - echo "Image $IMAGE_NAME - Tag $IMAGE_TAG - Path $IMAGE_PATH"
-    - docker build -t "$IMAGE" "$IMAGE_PATH"
+    - docker build --build-arg TAG="$IMAGE_TAG" -t "$IMAGE" "$IMAGE_PATH"
     - docker images
     - docker save -o built_image.tar "$IMAGE"
     workspaces:
