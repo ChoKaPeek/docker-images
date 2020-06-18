@@ -1,6 +1,6 @@
-FROM balenalib/armv7hf-debian-node:latest-buster
+FROM balenalib/armv7hf-debian-node:latest-jessie
 # balenalib is formerly resin
-# buster for gcc-8
+# stretch and buster provide a compile error on boost-geospatial-index
 
 ARG current_tag=2.2.2
 
