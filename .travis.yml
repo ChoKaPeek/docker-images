@@ -4,15 +4,13 @@ os:
 - linux
 dist: xenial
 
-services:
-- docker
-
 # for docker credentials storage
 addons:
   apt:
     packages:
     - pass
     - rng-tools
+    - docker-ce
 
 # travis encrypt --com PRIVATE_ENV="value" --add env.global
 # Expected tag is v?.?-<name-of-image>_<image.tag>
