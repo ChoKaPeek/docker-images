@@ -4,15 +4,19 @@ os:
 - linux
 dist: xenial
 
-services:
-- docker
-
 # for docker credentials storage
 addons:
   apt:
     packages:
     - pass
     - rng-tools
+
+# docker 18.06 doesn't contain experimental buildx, installing latest version
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
 # travis encrypt --com PRIVATE_ENV="value" --add env.global
 # Expected tag is v?.?-<name-of-image>_<image.tag>
