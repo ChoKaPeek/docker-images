@@ -1,5 +1,5 @@
 ARG TAG=7.4.2
-FROM chokapeek/elasticsearch-armhf:${TAG}
+FROM chokapeek/elasticsearch:${TAG}
 
 WORKDIR /opt/elasticsearch
 
