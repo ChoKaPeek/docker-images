@@ -71,8 +71,8 @@ jobs:
 
 stages:
 - name: cross-build
-  if: tag =~ /^.*es-kuzzle.*$/
+  if: tag =~ /^.*(es-kuzzle|elasticsearch).*$/
 - name: build
-  if: (tag IS present) AND NOT (tag =~ /^.*es-kuzzle.*$/)
+  if: (tag IS present) AND NOT (tag =~ /^.*(es-kuzzle|elasticsearch).*$/)
 - name: deploy
-  if: (tag IS present) AND NOT (tag =~ /^.*es-kuzzle.*$/)
+  if: (tag IS present) AND NOT (tag =~ /^.*(es-kuzzle|elasticsearch).*$/)
