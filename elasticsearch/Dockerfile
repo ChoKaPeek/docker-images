@@ -21,7 +21,7 @@ RUN curl -fsSL --compressed \
 # strip-components=1 removes root folder
 
 # Add arm JNA to the resource path
-RUN wget -P /opt/elasticsearch/lib \
+RUN wget -P /opt/elasticsearch/lib -O jna.jar \
   https://github.com/java-native-access/jna/blob/master/lib/native/linux-arm.jar
 
 # Update config
