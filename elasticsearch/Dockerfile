@@ -6,7 +6,7 @@ ARG ES_VERSION=${TAG}
 ARG ELASTIC="https://artifacts.elastic.co/downloads/elasticsearch"
 
 RUN apt update \
-	&& apt install -y curl nginx
+	&& apt install -y curl wget nginx
 
 # Setup nginx proxy
 COPY default.nginx.conf /etc/nginx/sites-available/default
@@ -19,6 +19,10 @@ RUN curl -fsSL --compressed \
   ${ELASTIC}/elasticsearch-${ES_VERSION}-no-jdk-linux-x86_64.tar.gz \
   | tar xz --strip-components=1
 # strip-components=1 removes root folder
+
+# Add arm JNA to the resource path
+RUN wget -P /opt/elasticsearch/lib \
+  https://github.com/java-native-access/jna/blob/master/lib/native/linux-arm.jar
 
 # Update config
 RUN echo "http.port: 9292" >> config/elasticsearch.yml
