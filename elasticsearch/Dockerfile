@@ -22,7 +22,7 @@ RUN curl -fsSL --compressed \
 
 # Add arm JNA to the resource path
 RUN wget -O /opt/elasticsearch/lib/jna.jar \
-  https://github.com/java-native-access/jna/blob/master/lib/native/linux-arm.jar
+  https://github.com/java-native-access/jna/raw/master/lib/native/linux-arm.jar
 
 # Update config
 RUN echo "http.port: 9292" >> config/elasticsearch.yml
