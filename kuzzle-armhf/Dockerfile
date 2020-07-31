@@ -24,15 +24,11 @@ RUN set -x \
     python \
     xz-utils
 
-RUN npm install --global nodemon
+RUN npm install forever -g
 
 # Get kuzzle and submodules
 RUN git clone -b ${TAG} --recursive \
     https://github.com/kuzzleio/kuzzle.git .
-
-# Debug line
-# Crashing (out of memory)
-#RUN npm install boost-geospatial-index
 
 # Build kuzzle
 RUN npm ci --unsafe-perm \
@@ -54,4 +50,4 @@ ENTRYPOINT ["/var/app/docker-compose/scripts/docker-entrypoint.sh"]
 
 RUN [ "cross-build-end" ]
 
-CMD [ "nodemon", "--inspect=0.0.0.0:9229", "bin/start-kuzzle-server" ]
+CMD [ "forever", "bin/start-kuzzle-server" ]
