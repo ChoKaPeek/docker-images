@@ -35,6 +35,7 @@ while IFS=$'\n' read line; do
     if [ $in_run -eq 1 ]; then
       if [[ "${trimmed%% *}" =~ ^($keywords)$ ]]; then
         echo "" >> $out
+        echo "" >> $out
         echo "$trimmed" >> $out
         in_run=0
       else
