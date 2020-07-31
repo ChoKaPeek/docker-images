@@ -1,4 +1,5 @@
 #!/bin/bash
 service nginx start
 
-/opt/elasticsearch/bin/elasticsearch
+# run as non-root
+su elasticsearch -c /opt/elasticsearch/bin/elasticsearch

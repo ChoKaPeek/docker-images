@@ -5,9 +5,6 @@ ARG TAG
 ARG ES_VERSION=${TAG}
 ARG ELASTIC="https://artifacts.elastic.co/downloads/elasticsearch"
 
-RUN useradd elasticsearch
-USER elasticsearch
-
 RUN apt update \
 	&& apt install -y curl wget nginx
 

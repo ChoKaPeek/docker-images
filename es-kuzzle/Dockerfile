@@ -3,6 +3,7 @@ FROM chokapeek/elasticsearch:${TAG}
 
 WORKDIR /opt/elasticsearch
 
+#####
 # KUZZLEIO TWEAKS
 ENV ES_JAVA_OPTS="-Xms512m -Xmx512m"
 
@@ -15,6 +16,12 @@ RUN echo "node.name: alyx" >> config/elasticsearch.yml
 RUN echo "discovery.type: single-node" >> config/elasticsearch.yml
 
 COPY jvm.options /usr/share/elasticsearch/config/jvm.options
+#####
+
+# elasticsearch needs non-root user
+RUN useradd elasticsearch
+RUN chown -R elasticsearch /opt/elasticsearch
+
 # Configure entry point
 COPY docker-entrypoint.sh /opt/
 RUN ["chmod", "+x", "/opt/docker-entrypoint.sh"]
