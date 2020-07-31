@@ -75,8 +75,13 @@ jobs:
       fi
     - echo "Image $IMAGE_NAME - $IMAGE_TAG - $IMAGE_PATH - Options $DK_OPT"
     - docker buildx build $DK_OPT --progress plain --platform "$PLATFORMS" --build-arg TAG="$IMAGE_TAG" -t "$DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG" --push "$IMAGE_PATH"
+  - stage: empty
+    script:
+    - echo "Nothing to do here, let the build pass!"
 
 stages:
+- name: empty
+  if: branch = master
 - name: cross-build
   if: tag =~ /^.*(es-kuzzle|elasticsearch).*$/
 - name: build
