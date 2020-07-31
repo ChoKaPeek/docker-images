@@ -12,7 +12,7 @@ RUN apt update \
 COPY default.nginx.conf /etc/nginx/sites-available/default
 
 # Setup es
-RUN mkdir elasticsearch
+RUN mkdir -p /opt/elasticsearch
 WORKDIR /opt/elasticsearch
 
 RUN curl -fsSL --compressed \
@@ -20,9 +20,10 @@ RUN curl -fsSL --compressed \
   | tar xz --strip-components=1
 # strip-components=1 removes root folder
 
-# Add arm JNA to the resource path
-RUN wget -O /opt/elasticsearch/lib/jna.jar \
-  https://github.com/java-native-access/jna/raw/master/lib/native/linux-arm.jar
+# Provided JNA does not contain a linux-arm/libjnidispatch.so, updating
+RUN rm /opt/elasticsearch/lib/jna*.jar \
+  && wget -O /opt/elasticsearch/lib/jna.jar \
+    https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.2.0/jna-5.2.0.jar
 
 # Update config
 RUN echo "http.port: 9292" >> config/elasticsearch.yml
