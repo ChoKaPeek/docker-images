@@ -6,6 +6,10 @@
 [ "$1" ] || {
   echo "Usage: ./squash-runs.sh PATH_TO_DOCKERFILE" && exit 1
 }
+[ -d "$1" ] || {
+  echo "Error: A directory is expected"
+  echo "Usage: ./squash-runs.sh PATH_TO_DOCKERFILE" && exit 1
+}
 
 path=$1/Dockerfile
 out=$1/Dockerfile_squash
