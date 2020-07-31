@@ -71,7 +71,7 @@ jobs:
     - |
       if [[ "$IMAGE_TAG" =~ ^.*squash$ ]]; then
         DK_OPT="$DK_OPT --file $IMAGE_PATH/Dockerfile_squash"
-        sh ci/squash-runs.sh $IMAGE_PATH
+        bash ci/squash-runs.sh $IMAGE_PATH
       fi
     - echo "Image $IMAGE_NAME - $IMAGE_TAG - $IMAGE_PATH - Options $DK_OPT"
     - docker buildx build $DK_OPT --progress plain --platform "$PLATFORMS" --build-arg TAG="$IMAGE_TAG" -t "$DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG" --push "$IMAGE_PATH"
