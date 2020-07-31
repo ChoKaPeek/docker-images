@@ -2,7 +2,6 @@ ARG TAG=7.4.2
 FROM adoptopenjdk/openjdk11:slim
 
 ARG TAG
-ARG ES_VERSION=${TAG}
 ARG ELASTIC="https://artifacts.elastic.co/downloads/elasticsearch"
 ARG YML="/opt/elasticsearch/config/elasticsearch.yml"
 
@@ -16,7 +15,7 @@ RUN apt update \
 RUN mkdir -p /opt/elasticsearch \
  && cd /opt/elasticsearch \
  && curl -fsSL --compressed \
-    ${ELASTIC}/elasticsearch-${ES_VERSION}-no-jdk-linux-x86_64.tar.gz \
+    "${ELASTIC}/elasticsearch-${TAG%%-*}-no-jdk-linux-x86_64.tar.gz" \
     | tar xz --strip-components=1
 # strip-components=1 removes root folder
 
