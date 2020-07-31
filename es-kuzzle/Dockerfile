@@ -7,20 +7,20 @@ WORKDIR /opt/elasticsearch
 # KUZZLEIO TWEAKS
 ENV ES_JAVA_OPTS="-Xms512m -Xmx512m"
 
-RUN echo "xpack.graph.enabled: false" >> config/elasticsearch.yml
-RUN echo "xpack.monitoring.enabled: false" >> config/elasticsearch.yml
-RUN echo "xpack.security.enabled: false" >> config/elasticsearch.yml
-RUN echo "xpack.watcher.enabled: false" >> config/elasticsearch.yml
-RUN echo "cluster.name: kuzzle" >> config/elasticsearch.yml
-RUN echo "node.name: alyx" >> config/elasticsearch.yml
-RUN echo "discovery.type: single-node" >> config/elasticsearch.yml
+RUN echo "xpack.graph.enabled: false" >> config/elasticsearch.yml \
+ && echo "xpack.monitoring.enabled: false" >> config/elasticsearch.yml \
+ && echo "xpack.security.enabled: false" >> config/elasticsearch.yml \
+ && echo "xpack.watcher.enabled: false" >> config/elasticsearch.yml \
+ && echo "cluster.name: kuzzle" >> config/elasticsearch.yml \
+ && echo "node.name: alyx" >> config/elasticsearch.yml \
+ && echo "discovery.type: single-node" >> config/elasticsearch.yml
 
 COPY jvm.options /usr/share/elasticsearch/config/jvm.options
 #####
 
 # elasticsearch needs non-root user
-RUN useradd elasticsearch
-RUN chown -R elasticsearch /opt/elasticsearch
+RUN useradd elasticsearch \
+ && chown -R elasticsearch /opt/elasticsearch
 
 # Configure entry point
 COPY docker-entrypoint.sh /opt/
