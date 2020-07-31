@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # By ChoKaPeek <amael.tardif@epita.fr>
 # The objective here is to squash docker images. Merging commands saves space.
 # No magic here, this script only merges adjacent RUN commands.
