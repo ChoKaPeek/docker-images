@@ -28,6 +28,7 @@ env:
   - IMAGE_PATH="${TMP%%_*}"
   - IMAGE_NAME=$(basename "$IMAGE_PATH")
   - IMAGE="$IMAGE_NAME:$IMAGE_TAG"
+  - DK_OPT=""
   - PLATFORMS=linux/amd64,linux/arm/v7,linux/arm64
     # DOCKER_USERNAME
   - secure: "L3pJ38Wp5sJnXVuDEV63Omup4J2A5+/nmjnQWsYf6EA4HQGswcRaBWs+g2DEgWLabFuMnfClET/gH+6B8Mo/5SoPOLKa1bpmybmH5pH2dLS+PzFzFNaYvsyLsGEFA5VrYv3lgoXZvp+jlpmkLBUtbCrlnXvrjiALH+HCzlYGH7dXbmKwdSqRBlKONAmKnbEUisa4h+o7uw+x1uxGllIRwTpvOFaLd6xZdYB84YM03fmyOacpBzHZTIahiSYdeEYM3RG469zHe89Kjyczw0iHQFpRBpGNo+jB7ZNDIv0FisXBx/y4Xlqsf+H/gJTas19irF2/ZvXB7w+4C8GSos0CvxjDqWRfkhx/wJ23uc9hdwUCs/5UFwWfOnyB14Gfql/q22rbWpVyGXqKxWL86kXahTFn+ArrlLpJ5CWLtyoE1YrNDmPvy4ZHeBTL8h1GiuDcRdelw08E3E71sYycsHE+Lrk3Cr1reVDD/IECLjKVQ2Lbmn5/pqRlHD9oAe2lNUFo/sIeVU/a6ISfz+L/nxDJEU4wMffeqPdeP8krc2xVEBDowlQxpsBH459I7O+lB+OtiJL6yCWGQ8fNRx9MqWV1GAPLJzFq/A9QCuDWtS8s7Uh0W3kGNI9N2UjbBSW++srVtM2NBBy7JMRzxkZrpJVldsScLIXMRzqtqmp0/zxVm/A="
@@ -38,8 +39,9 @@ jobs:
   include:
   - stage: build
     script:
-    - echo "Image $IMAGE_NAME - Tag $IMAGE_TAG - Path $IMAGE_PATH"
-    - docker build --build-arg TAG="$IMAGE_TAG" -t "$IMAGE" "$IMAGE_PATH"
+    - [[ "$IMAGE_TAG" =~ ^.*squash$ ]] && DK_OPT="$DK_OPT --squash"
+    - echo "Image $IMAGE_NAME - $IMAGE_TAG - $IMAGE_PATH - Options $DK_OPT"
+    - docker build $DK_OPT --build-arg TAG="$IMAGE_TAG" -t "$IMAGE" "$IMAGE_PATH"
     - docker images
     - docker save -o built_image.tar "$IMAGE"
     workspaces:
@@ -69,7 +71,8 @@ jobs:
     - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - docker buildx create --name xbuilder --use
     - docker buildx inspect --bootstrap
-    - docker buildx build --progress plain --platform "$PLATFORMS" --build-arg TAG="$IMAGE_TAG" -t "$DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG" --push "$IMAGE_PATH"
+    - [[ "$IMAGE_TAG" =~ ^.*squash$ ]] && DK_OPT="$DK_OPT --squash"
+    - docker buildx build $DK_OPT --progress plain --platform "$PLATFORMS" --build-arg TAG="$IMAGE_TAG" -t "$DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG" --push "$IMAGE_PATH"
 
 stages:
 - name: cross-build
