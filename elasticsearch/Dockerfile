@@ -29,3 +29,6 @@ RUN rm /opt/elasticsearch/lib/jna*.jar \
 RUN echo "http.port: 9292" >> config/elasticsearch.yml
 RUN echo "network.host: 127.0.0.1" >> config/elasticsearch.yml
 RUN echo "xpack.ml.enabled: false" >> config/elasticsearch.yml
+
+# Remove warning about arm architecture
+RUN echo "bootstrap.system_call_filter: false" >> config/elasticsearch.yml
