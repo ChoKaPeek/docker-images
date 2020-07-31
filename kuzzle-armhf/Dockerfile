@@ -27,7 +27,7 @@ RUN set -x \
 RUN npm install forever -g
 
 # Get kuzzle and submodules
-RUN git clone -b ${TAG} --recursive \
+RUN git clone -b "${TAG%%-*}" --recursive \
     https://github.com/kuzzleio/kuzzle.git .
 
 # Build kuzzle
