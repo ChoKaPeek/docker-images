@@ -1,4 +1,5 @@
 #!/bin/sh
+# By ChoKaPeek <amael.tardif@epita.fr>
 
 # installs the docker-credential-pass credentials helper
 curl -fsSL https://github.com/docker/docker-credential-helpers/releases/download/v0.6.3/docker-credential-pass-v0.6.3-amd64.tar.gz | tar xz

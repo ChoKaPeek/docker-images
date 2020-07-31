@@ -1,3 +1,4 @@
+# By ChoKaPeek, <amael.tardif@epita.fr>
 # defaults
 language: ruby
 os:
@@ -39,6 +40,7 @@ jobs:
   include:
   - stage: build
     script:
+    - sh ci/enable-experimental.sh
     - if [[ "$IMAGE_TAG" =~ ^.*squash$ ]]; then DK_OPT="$DK_OPT --squash"; fi
     - echo "Image $IMAGE_NAME - $IMAGE_TAG - $IMAGE_PATH - Options $DK_OPT"
     - docker build $DK_OPT --build-arg TAG="$IMAGE_TAG" -t "$IMAGE" "$IMAGE_PATH"
@@ -61,17 +63,13 @@ jobs:
   - stage: cross-build
     script:
     - sh ci/docker-credentials-helper.sh
-      # server side
-    - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-      # client side
-    - echo '{"experimental":"enabled"}' | sudo tee $HOME/.docker/config.json
-    - docker -v
-    - sudo systemctl restart docker
+    - sh ci/enable-experimental.sh
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - docker buildx create --name xbuilder --use
     - docker buildx inspect --bootstrap
     - if [[ "$IMAGE_TAG" =~ ^.*squash$ ]]; then DK_OPT="$DK_OPT --squash"; fi
+    - echo "Image $IMAGE_NAME - $IMAGE_TAG - $IMAGE_PATH - Options $DK_OPT"
     - docker buildx build $DK_OPT --progress plain --platform "$PLATFORMS" --build-arg TAG="$IMAGE_TAG" -t "$DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG" --push "$IMAGE_PATH"
 
 stages:
