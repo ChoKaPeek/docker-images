@@ -4,6 +4,7 @@ FROM balenalib/armv7hf-debian-node:latest-jessie
 # stretch and buster provide a compile error on boost-geospatial-index
 
 ARG TAG
+ENV KUZZLE_VERSION="${TAG%%-*}"
 
 LABEL io.kuzzle.vendor="Kuzzle <support@kuzzle.io>"
 LABEL description="Run your Kuzzle backend in production mode"
@@ -27,7 +28,7 @@ RUN set -x \
 RUN npm install forever -g
 
 # Get kuzzle and submodules
-RUN git clone -b ${TAG} --recursive \
+RUN git clone -b ${KUZZLE_VERSION} --recursive \
     https://github.com/kuzzleio/kuzzle.git .
 
 # Build kuzzle
