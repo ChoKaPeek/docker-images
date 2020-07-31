@@ -16,8 +16,9 @@ out=$1/Dockerfile_squash
 keywords="COPY|ARG|FROM|ENV|WORKDIR|ENTRYPOINT|CMD"
 in_run=0
 
+# != writeline
 write() {
-  echo "$1 \\" >> $out
+  echo -n "$1" >> $out
 }
 
 rm -f $out
@@ -34,11 +35,12 @@ while IFS=$'\n' read line; do
   else
     if [ $in_run -eq 1 ]; then
       if [[ "${trimmed%% *}" =~ ^($keywords)$ ]]; then
-        echo "" >> $out
-        echo "$trimmed" >> $out
+        printf "\n\n%s" "$trimmed" >> $out
         in_run=0
       else
-        ! [[ "$trimmed" =~ ^#.*$ ]] && write "$trimmed"
+        ! [[ "$trimmed" =~ ^#.*$ ]] && {
+          [[ "$trimmed" != "" ]]  && write " $trimmed"
+        }
       fi
     else
       echo "$trimmed" >> $out
