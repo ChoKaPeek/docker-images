@@ -50,4 +50,4 @@ ENTRYPOINT ["/var/app/docker-compose/scripts/docker-entrypoint.sh"]
 
 RUN [ "cross-build-end" ]
 
-CMD [ "forever", "--spinSleepTime=15", "bin/start-kuzzle-server" ]
+CMD [ "forever", "--spinSleepTime=15000", "bin/start-kuzzle-server" ]
