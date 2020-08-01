@@ -35,7 +35,7 @@ while IFS=$'\n' read line; do
   else
     if [ $in_run -eq 1 ]; then
       if [[ "${trimmed%% *}" =~ ^($keywords)$ ]]; then
-        printf "\n\n%s" "$trimmed" >> $out
+        printf "\n\n%s\n" "$trimmed" >> $out
         in_run=0
       else
         ! [[ "$trimmed" =~ ^#.*$ ]] && {

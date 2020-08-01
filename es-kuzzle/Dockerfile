@@ -1,21 +1,21 @@
 ARG TAG=7.4.2
 FROM chokapeek/elasticsearch:${TAG}
 
-WORKDIR /opt/elasticsearch
+ARG YML="/opt/elasticsearch/config/elasticsearch.yml"
 
 #####
 # KUZZLEIO TWEAKS
 ENV ES_JAVA_OPTS="-Xms512m -Xmx512m"
 
-RUN echo "xpack.graph.enabled: false" >> config/elasticsearch.yml \
- && echo "xpack.monitoring.enabled: false" >> config/elasticsearch.yml \
- && echo "xpack.security.enabled: false" >> config/elasticsearch.yml \
- && echo "xpack.watcher.enabled: false" >> config/elasticsearch.yml \
- && echo "cluster.name: kuzzle" >> config/elasticsearch.yml \
- && echo "node.name: alyx" >> config/elasticsearch.yml \
- && echo "discovery.type: single-node" >> config/elasticsearch.yml
-
 COPY jvm.options /usr/share/elasticsearch/config/jvm.options
+
+RUN echo "xpack.graph.enabled: false" >> $YML \
+ && echo "xpack.monitoring.enabled: false" >> $YML \
+ && echo "xpack.security.enabled: false" >> $YML \
+ && echo "xpack.watcher.enabled: false" >> $YML \
+ && echo "cluster.name: kuzzle" >> $YML \
+ && echo "node.name: alyx" >> $YML \
+ && echo "discovery.type: single-node" >> $YML
 #####
 
 # elasticsearch needs non-root user
