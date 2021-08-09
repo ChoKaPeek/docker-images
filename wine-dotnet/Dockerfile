@@ -13,8 +13,9 @@ ARG WINE_BRANCH="stable"
 ENV WINEDEBUG=fixme-all
 
 # Setup a Wine prefix
-ENV WINEPREFIX=/root/.net 
-ENV WINEARCH=win64
+ENV WINEPREFIX=/root/.net
+# According to logs, everything supposedly works better on 32bit arch
+ENV WINEARCH=win32
 
 # Install prerequisites
 RUN apt-get update -qq \
