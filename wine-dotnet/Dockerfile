@@ -8,8 +8,8 @@ ARG BUILD_DEP="\
   software-properties-common \
   wget"
   
-# stable is 6.0.X which produces an error on dotnet48 prompting to update wine to 6.6
-ARG WINE_BRANCH="6.13"
+# stable is 6.0.X which produces an error on dotnet48 prompting to update wine to 6.6. Trying staging
+ARG WINE_BRANCH="staging"
 
 # Turn off wine install Fixme warnings
 ENV WINEDEBUG=fixme-all
