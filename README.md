@@ -10,3 +10,6 @@ Elasticsearch
 
 Elasticsearch, as tweaked by the Kuzzleio team
 [https://hub.docker.com/layers/chokapeek/es-kuzzle-armhf/7.4.2/images/sha256-73ff106ba5cb5782dc4eba6f8bf0f54d0c5d2b49150a751715b69560d12b22aa?context=explore](7.4.2 (armhf))
+
+Wine + Dotnet
+[https://hub.docker.com/layers/chokapeek/wine-dotnet/20.10/images/sha256-1955852c230e9702d64fe4d6f4975a3999f2078fc48374b8870829530325906d?context=explore](ubuntu 20.10 (amd64))
