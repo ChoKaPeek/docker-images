@@ -49,7 +49,7 @@ RUN apt-get update -qq \
     # Install dotnet
     && xvfb-run -e /dev/stdout winetricks --unattended --force ${DOTNET} dotnet_verifier \
     # Verify
-    && xvfb-run -e /dev/stdout wine netfx_setupverifier.exe
+    && xvfb-run -e /dev/stdout wine netfx_setupverifier.exe \
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
