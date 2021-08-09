@@ -41,8 +41,6 @@ RUN apt-get update -qq \
     && dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -yqq --install-recommends winehq-${WINE_BRANCH} \
-    # Run wine configuration
-    && xvfb-run -e /dev/stdout winecfg \
     # Install winetricks
     && wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
     && chmod +x /usr/bin/winetricks \
