@@ -5,14 +5,21 @@ ARG DOTNET="dotnet48"
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG BUILD_DEP="\
   git \
-  software-properties-common \
-  wget"
-  
-# stable is 6.0.X which produces an error on dotnet48 prompting to update wine to 6.6. Trying staging
+  software-properties-common"
+
+# 'stable' is 6.0.X which produces an error on dotnet48 prompting to update
+# wine to 6.6. Trying 'staging'
 ARG WINE_BRANCH="staging"
 
 # Turn off wine install Fixme warnings
 ENV WINEDEBUG=fixme-all
+
+# Disables wine prompt for Mono (mscoree) and Gecko (mshtml=)
+# which was causing prefix build to hang when using xvfb
+ENV WINEDLLOVERRIDES=mscoree,mshtml=
+
+# Xvfb configuration
+ENV DISPLAY=:99
 
 # Setup a Wine prefix
 ENV WINEPREFIX=/root/.net
@@ -33,22 +40,24 @@ RUN apt-get update -qq \
         cabextract \
         p7zip \
         unzip \
+        wget \
         xvfb \
         zenity \
+    # Run Xvfb, an X virtual frame buffer
+    && { Xvfb :99 & } \
     # Install wine
     && wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
     && apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $(grep VERSION_CODENAME= /etc/os-release | cut -d= -f2) main" \
     && dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -yqq --install-recommends winehq-${WINE_BRANCH} \
-    # Run wine configuration
-    && winecfg \
     # Install winetricks
     && wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
     && chmod +x /usr/bin/winetricks \
     # Install dotnet
-    && winetricks --unattended --force ${DOTNET} dotnet_verifier \
+    && winetricks --unattended --force ${DOTNET} \
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /root/.cache
