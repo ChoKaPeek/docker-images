@@ -18,6 +18,9 @@ ENV WINEPREFIX=/root/.net
 # According to logs, everything supposedly works better on 32bit arch
 ENV WINEARCH=win32
 
+# Xvfb configuration
+ENV DISPLAY=:99
+
 # Install prerequisites
 RUN apt-get update -qq \
     && apt-get install -yqq --no-install-recommends \
@@ -44,10 +47,12 @@ RUN apt-get update -qq \
     # Install winetricks
     && wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
     && chmod +x /usr/bin/winetricks \
+    # Run Xvfb
+    && Xvfb :99 & \
     # Install dotnet
-    && xvfb-run -e /dev/stdout winetricks --unattended --force ${DOTNET} dotnet_verifier \
+    && winetricks --unattended --force ${DOTNET} dotnet_verifier \
     # Verify
-    && xvfb-run -e /dev/stdout wine netfx_setupverifier.exe \
+    && wine netfx_setupverifier.exe \
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
