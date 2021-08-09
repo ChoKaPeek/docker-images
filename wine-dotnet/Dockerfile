@@ -50,7 +50,7 @@ RUN apt-get update -qq \
     # Run Xvfb
     && Xvfb :99 & \
     # Install dotnet
-    && winetricks --unattended --force ${DOTNET} dotnet_verifier \
+    winetricks --unattended --force ${DOTNET} dotnet_verifier \
     # Verify
     && wine netfx_setupverifier.exe \
     # Cleanup
