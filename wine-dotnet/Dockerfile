@@ -7,7 +7,9 @@ ARG BUILD_DEP="\
   git \
   software-properties-common \
   wget"
-ARG WINE_BRANCH="stable"
+  
+# stable is 6.0.X which produces an error on dotnet48 prompting to update wine to 6.6
+ARG WINE_BRANCH="6.14"
 
 # Turn off wine install Fixme warnings
 ENV WINEDEBUG=fixme-all
