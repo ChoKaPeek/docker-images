@@ -5,8 +5,7 @@ ARG DOTNET="dotnet48"
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG BUILD_DEP="\
   git \
-  software-properties-common \
-  wget"
+  software-properties-common"
   
 # stable is 6.0.X which produces an error on dotnet48 prompting to update wine to 6.6. Trying staging
 ARG WINE_BRANCH="staging"
@@ -33,6 +32,7 @@ RUN apt-get update -qq \
         cabextract \
         p7zip \
         unzip \
+        wget \
         xvfb \
         zenity \
     # Install wine
@@ -42,13 +42,16 @@ RUN apt-get update -qq \
     && apt-get update \
     && apt-get install -yqq --install-recommends winehq-${WINE_BRANCH} \
     # Run wine configuration
-    && winecfg \
+    && xvfb-run -e /dev/stdout winecfg \
     # Install winetricks
     && wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
     && chmod +x /usr/bin/winetricks \
     # Install dotnet
-    && winetricks --unattended --force ${DOTNET} dotnet_verifier \
+    && xvfb-run -e /dev/stdout winetricks --unattended --force ${DOTNET} dotnet_verifier \
+    # Verify
+    && xvfb-run -e /dev/stdout wine netfx_setupverifier.exe
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /root/.cache
