@@ -6,7 +6,7 @@ ARG DEBIAN_FRONTEND="noninteractive"
 ARG BUILD_DEP="\
   git \
   software-properties-common"
-  
+
 # stable is 6.0.X which produces an error on dotnet48 prompting to update wine to 6.6. Trying staging
 ARG WINE_BRANCH="staging"
 
@@ -17,9 +17,6 @@ ENV WINEDEBUG=fixme-all
 ENV WINEPREFIX=/root/.net
 # According to logs, everything supposedly works better on 32bit arch
 ENV WINEARCH=win32
-
-# Xvfb configuration
-ENV DISPLAY=:99
 
 # Install prerequisites
 RUN apt-get update -qq \
@@ -38,8 +35,6 @@ RUN apt-get update -qq \
         wget \
         xvfb \
         zenity \
-    # Run Xvfb
-    && { Xvfb :99 & } \
     # Install wine
     && wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
     && apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $(grep VERSION_CODENAME= /etc/os-release | cut -d= -f2) main" \
