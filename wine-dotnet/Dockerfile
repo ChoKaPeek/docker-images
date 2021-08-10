@@ -1,7 +1,7 @@
 ARG TAG=20.10
 FROM ubuntu:${TAG}
 
-ARG DOTNET="dotnet48"
+ARG DOTNET="dotnet472 dotnet48"
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG BUILD_DEP="\
   git \
@@ -11,12 +11,11 @@ ARG BUILD_DEP="\
 # wine to 6.6. Trying 'staging'
 ARG WINE_BRANCH="staging"
 
+# Corresponds to wine version 6.10 to 6.13
+ARG WINE_MONO_VERSION="6.2.0"
+
 # Turn off wine install Fixme warnings
 ENV WINEDEBUG=fixme-all
-
-# Disables wine prompt for Mono (mscoree) and Gecko (mshtml=)
-# which was causing prefix build to hang when using xvfb
-ENV WINEDLLOVERRIDES=mscoree,mshtml=
 
 # Xvfb configuration
 ENV DISPLAY=:99
@@ -45,6 +44,9 @@ RUN apt-get update -qq \
         zenity \
     # Run Xvfb, an X virtual frame buffer
     && { Xvfb :99 & } \
+    # Mono For Wine
+    && mkdir /tmp/wine-mono \
+    && wget https://dl.winehq.org/wine/wine-mono/${WINE_MONO_VERSION}/wine-mono-${WINE_MONO_VERSION}.msi -O /tmp/wine-mono/wine-mono-${WINE_MONO_VERSION} \
     # Install wine
     && wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
     && apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $(grep VERSION_CODENAME= /etc/os-release | cut -d= -f2) main" \
