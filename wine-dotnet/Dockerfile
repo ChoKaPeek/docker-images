@@ -6,20 +6,25 @@ ARG DEBIAN_FRONTEND="noninteractive"
 ARG BUILD_DEP="\
   git \
   software-properties-common"
-  
-# stable is 6.0.X which produces an error on dotnet48 prompting to update wine to 6.6. Trying staging
+
+# 'stable' is 6.0.X which produces an error on dotnet48 prompting to update
+# wine to 6.6. Trying 'staging'
 ARG WINE_BRANCH="staging"
 
 # Turn off wine install Fixme warnings
 ENV WINEDEBUG=fixme-all
 
+# Disables wine prompt for Mono (mscoree) and Gecko (mshtml=)
+# which was causing prefix build to hang when using xvfb
+ENV WINEDLLOVERRIDES=mscoree,mshtml=
+
+# Xvfb configuration
+ENV DISPLAY=:99
+
 # Setup a Wine prefix
 ENV WINEPREFIX=/root/.net
 # According to logs, everything supposedly works better on 32bit arch
 ENV WINEARCH=win32
-
-# Xvfb configuration
-ENV DISPLAY=:99
 
 # Install prerequisites
 RUN apt-get update -qq \
@@ -38,7 +43,7 @@ RUN apt-get update -qq \
         wget \
         xvfb \
         zenity \
-    # Run Xvfb
+    # Run Xvfb, an X virtual frame buffer
     && { Xvfb :99 & } \
     # Install wine
     && wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
