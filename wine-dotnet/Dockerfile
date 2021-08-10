@@ -55,9 +55,7 @@ RUN apt-get update -qq \
     && wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
     && chmod +x /usr/bin/winetricks \
     # Install dotnet
-    && winetricks --unattended --force ${DOTNET} dotnet_verifier \
-    # Verify
-    && wine netfx_setupverifier.exe \
+    && winetricks --unattended --force ${DOTNET} \
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
