@@ -46,8 +46,6 @@ RUN apt-get update -qq \
     && chmod +x /usr/bin/winetricks \
     # Install dotnet
     && winetricks --unattended --force ${DOTNET} dotnet_verifier \
-    # Verify
-    && wine netfx_setupverifier.exe \
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
