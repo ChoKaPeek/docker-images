@@ -38,6 +38,8 @@ RUN apt-get update -qq \
         wget \
         xvfb \
         zenity \
+    # Run Xvfb
+    && { Xvfb :99 & } \
     # Install wine
     && wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
     && apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $(grep VERSION_CODENAME= /etc/os-release | cut -d= -f2) main" \
@@ -47,10 +49,8 @@ RUN apt-get update -qq \
     # Install winetricks
     && wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
     && chmod +x /usr/bin/winetricks \
-    # Run Xvfb
-    && Xvfb :99 & \
     # Install dotnet
-    winetricks --unattended --force ${DOTNET} dotnet_verifier \
+    && winetricks --unattended --force ${DOTNET} dotnet_verifier \
     # Verify
     && wine netfx_setupverifier.exe \
     # Cleanup
