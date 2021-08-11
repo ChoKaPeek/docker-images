@@ -38,7 +38,8 @@ RUN apt-get update -qq \
     # Install powershell
     && mkdir -p /tmp/pwsh \
     && wget -nv -O /tmp/pwsh/pwsh.zip https://github.com/PowerShell/PowerShell/releases/download/v${PWSH_VERSION}/PowerShell-${PWSH_VERSION}-win-x86.zip \
-    && unzip /tmp/pwsh/pwsh.zip -d /tmp/pwsh \
+    #   Ignore unzip warning: zip appears to use backslashes as path separators
+    && { unzip /tmp/pwsh/pwsh.zip -d /tmp/pwsh || true; } \
     # Install wine
     && wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
     && apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $(grep VERSION_CODENAME= /etc/os-release | cut -d= -f2) main" \
@@ -47,7 +48,7 @@ RUN apt-get update -qq \
     && apt-get install -yqq --install-recommends winehq-${WINE_BRANCH} \
     # Install dotnet
     && wget -nv https://dot.net/v1/dotnet-install.ps1 \
-    && wine /tmp/pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
+    && wine /tmp/pwsh/pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
