@@ -6,8 +6,10 @@ ARG PWSH_VERSION="7.1.3"
 ARG DOTNET_VERSION=${TAG}
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG BUILD_DEP="\
+  git \
   software-properties-common \
   unzip \
+  cat \
   wget"
 
 # 'stable' is 6.0.X which produced an error on dotnet48 prompting to update
@@ -45,14 +47,19 @@ RUN apt-get update -qq \
     && apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $(grep VERSION_CODENAME= /etc/os-release | cut -d= -f2) main" \
     && dpkg --add-architecture i386 \
     && apt-get update \
+    #   Install wine runtime dependencies
     && apt-get install -yqq --install-recommends winehq-${WINE_BRANCH} \
     # Create prefix and make sure everything is up-to-date
-    && wineboot --update \
+    && wine winecfg \
     # Install dotnet
-    && wget -nv https://dot.net/v1/dotnet-install.ps1 \
-    && wine /tmp/pwsh/pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
+    && cd /tmp/pwsh \
+    && wget -nv -O dotnet-install.ps1 https://dot.net/v1/dotnet-install.ps1 \
+    && cat dotnet-install.ps1 \
+    && date \
+    && wine pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
+    && date \
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/pwsh
+    && rm -rf /var/lib/apt/lists/*
+    #&& rm -rf /tmp/pwsh
