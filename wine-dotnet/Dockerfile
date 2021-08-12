@@ -1,13 +1,18 @@
 ARG TAG=5.0
 FROM ubuntu:20.10
 
+# Port argument to new scope
+ARG TAG
 # Powershell is used to install dotnet using microsoft's script
 ARG PWSH_VERSION="7.1.3"
 ARG DOTNET_VERSION=${TAG}
 ARG DEBIAN_FRONTEND="noninteractive"
+
+# 'expect' has 'unbuffer', a pseudo-tty (pty) mandatory to run pwsh scripts
 ARG BUILD_DEP="\
   software-properties-common \
   unzip \
+  expect \
   wget"
 
 # 'stable' is 6.0.X which produced an error on dotnet48 prompting to update
@@ -35,10 +40,14 @@ RUN apt-get update -qq \
         tzdata \
         winbind \
         $BUILD_DEP \
+        # required for winetricks
+        cabextract \
+        p7zip \
+        zenity \
     # Install powershell
     && mkdir -p /tmp/pwsh \
     && wget -nv -O /tmp/pwsh/pwsh.zip https://github.com/PowerShell/PowerShell/releases/download/v${PWSH_VERSION}/PowerShell-${PWSH_VERSION}-win-x86.zip \
-    #   Ignore unzip warning: zip appears to use backslashes as path separators
+    #   Ignore unzip warning "zip appears to use backslashes as path separators"
     && { unzip /tmp/pwsh/pwsh.zip -d /tmp/pwsh || true; } \
     # Install wine
     && wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
@@ -46,11 +55,16 @@ RUN apt-get update -qq \
     && dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -yqq --install-recommends winehq-${WINE_BRANCH} \
+    # Install winetricks
+    && wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
+    && chmod +x /usr/bin/winetricks \
     # Create prefix and make sure everything is up-to-date
     && wineboot --update \
+    # Install winetricks plugin no crash dialog, unsure if necessary
+    && winetricks --force --unattended nocrashdialog \
     # Install dotnet
-    && wget -nv https://dot.net/v1/dotnet-install.ps1 \
-    && wine /tmp/pwsh/pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
+    && wget -nv -O dotnet-install.ps1 https://dot.net/v1/dotnet-install.ps1 \
+    && unbuffer wine /tmp/pwsh/pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
