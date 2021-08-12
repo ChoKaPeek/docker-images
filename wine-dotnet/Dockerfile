@@ -50,9 +50,12 @@ RUN apt-get update -qq \
     && wineboot --update \
     # Install dotnet
     && wget -nv https://dot.net/v1/dotnet-install.ps1 \
-    && wine /tmp/pwsh/pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
+    && echo "wine > powershell > dotnet..." \
+    && date \
+    && wineconsole /tmp/pwsh/pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
+    && date \
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/pwsh
+    && rm -rf /var/lib/apt/lists/*
+    #&& rm -rf /tmp/pwsh
