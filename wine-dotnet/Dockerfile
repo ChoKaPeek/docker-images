@@ -6,6 +6,7 @@ ARG PWSH_VERSION="7.1.3"
 ARG DOTNET_VERSION=${TAG}
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG BUILD_DEP="\
+  git \
   software-properties-common \
   unzip \
   wget"
@@ -35,6 +36,23 @@ RUN apt-get update -qq \
         tzdata \
         winbind \
         $BUILD_DEP \
+    && apt-get install -yqq --no-install-recommends \
+        gcc-multilib libasound2-dev:i386 libgsm1-dev:i386 \
+        libjpeg8-dev:i386 liblcms2-dev:i386 libldap2-dev:i386 \
+        libmpg123-dev:i386 libopenal-dev:i386 libv4l-dev:i386 \
+        libx11-dev:i386 libxinerama-dev:i386 libxml2-dev:i386 \
+        zlib1g-dev:i386 libcapi20-dev:i386 libcups2:i386 \
+        libdbus-1-3:i386 libfontconfig:i386 libfreetype6:i386 \
+        libglu1-mesa:i386 libgnutls26:i386 libgphoto2-2:i386 \
+        libncurses5:i386 libosmesa6:i386 libsane:i386 libxcomposite1:i386 \
+        libxcursor1:i386 libxi6:i386 libxrandr2:i386 libxslt1.1:i386 \
+        ocl-icd-libopencl1:i386 \
+    # Build wine
+    && git clone git://source.winehq.org/git/wine.git \
+    && cd wine \
+    && mkdir build && cd build \
+    && ../configure CFLAGS="-march=native -O3 -pipe -fstack-protector-strong" --without-x \
+    && make -j && make install \
     # Install powershell
     && mkdir -p /tmp/pwsh \
     && wget -nv -O /tmp/pwsh/pwsh.zip https://github.com/PowerShell/PowerShell/releases/download/v${PWSH_VERSION}/PowerShell-${PWSH_VERSION}-win-x86.zip \
@@ -47,12 +65,15 @@ RUN apt-get update -qq \
     && apt-get update \
     && apt-get install -yqq --install-recommends winehq-${WINE_BRANCH} \
     # Create prefix and make sure everything is up-to-date
-    && wineboot --update \
+    && ./wine winecfg \
     # Install dotnet
     && wget -nv https://dot.net/v1/dotnet-install.ps1 \
-    && wine /tmp/pwsh/pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
+    && echo "wine > powershell > dotnet..." \
+    && date \
+    && ./wine /tmp/pwsh/pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
+    && date \
     # Cleanup
     && apt-get remove --purge -yqq $BUILD_DEP \
     && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/pwsh
+    && rm -rf /var/lib/apt/lists/*
+    #&& rm -rf /tmp/pwsh
