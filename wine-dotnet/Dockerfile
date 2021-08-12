@@ -46,6 +46,8 @@ RUN apt-get update -qq \
     && dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -yqq --install-recommends winehq-${WINE_BRANCH} \
+    # Create prefix and make sure everything is up-to-date
+    && wineboot --update \
     # Install dotnet
     && wget -nv https://dot.net/v1/dotnet-install.ps1 \
     && wine /tmp/pwsh/pwsh.exe dotnet-install.ps1 -c ${DOTNET_VERSION} \
