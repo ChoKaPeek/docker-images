@@ -8,6 +8,7 @@ ARG DEBIAN_FRONTEND="noninteractive"
 ARG BUILD_DEP="\
   software-properties-common \
   unzip \
+  xvfb \
   wget"
 
 # 'stable' is 6.0.X which produced an error on dotnet48 prompting to update
@@ -24,6 +25,10 @@ ENV WINEARCH=win32
 
 # dotnet executable path
 ENV WINEPATH=${WINEPREFIX}/drive_c/users/root/AppData/Local/Microsoft/dotnet
+
+# Disables wine prompt for Mono (mscoree) and Gecko (mshtml=)
+# which was causing prefix build to hang when using xvfb
+ENV WINEDLLOVERRIDES=mscoree,mshtml=
 
 # Install prerequisites
 RUN apt-get update -qq \
@@ -47,6 +52,7 @@ RUN apt-get update -qq \
     && apt-get update \
     && apt-get install -yqq --install-recommends winehq-${WINE_BRANCH} \
     # Create prefix and make sure everything is up-to-date
+    && xvfb-run winecfg \
     && wineboot --update \
     # Install dotnet
     && wget -nv https://dot.net/v1/dotnet-install.ps1 \
