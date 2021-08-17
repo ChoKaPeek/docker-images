@@ -8,11 +8,9 @@ ARG PWSH_VERSION="7.1.3"
 ARG DOTNET_VERSION=${TAG}
 ARG DEBIAN_FRONTEND="noninteractive"
 
-# 'expect' has 'unbuffer', a pseudo-tty (pty) mandatory to run pwsh scripts
 ARG BUILD_DEP="\
   software-properties-common \
   unzip \
-  expect \
   wget"
 
 # 'stable' is 6.0.X which produced an error on dotnet48 prompting to update
@@ -44,6 +42,8 @@ RUN apt-get update -qq \
         cabextract \
         p7zip \
         zenity \
+        # contains 'unbuffer', a pseudo-tty (pty) mandatory to interactive needs
+        expect \
     # Install powershell
     && mkdir -p /tmp/pwsh \
     && wget -nv -O /tmp/pwsh/pwsh.zip https://github.com/PowerShell/PowerShell/releases/download/v${PWSH_VERSION}/PowerShell-${PWSH_VERSION}-win-x86.zip \
